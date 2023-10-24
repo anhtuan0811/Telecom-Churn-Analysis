@@ -14,41 +14,38 @@
 
 The Telco customer churn data contains information about a fictional telco company that provided home phone and Internet services to 7043 customers in California in Q3. It indicates which customers have left, stayed, or signed up for their service.
 ### ❓ Question
-Can you predict whether a patient should be treated of his/her mental illness or not according to the values obtained in the dataset?
-
----
+Can you predict whether customers will churn based on customer data ?
 
 # :bookmark_tabs:Example Datasets
 
 <details><summary> 👆🏼 Click to expand Dataset information </summary>
+- CustomerID: A unique ID that identifies each customer.
+- Gender: Indicate if the customer is a male or a female
+- SeniorCitizen: Indicate if the customer is a senior citizen: 1, 0
+- Partner: Indicate if the customer has a partner: Yes, No
+- Dependents: Indicate if the customer has dependents: Yes, No
+- Tenure: Indicates the total amount of months that the customer has been with the company by the end of the quarter specified above.
+- Phone Service: Indicates if the customer subscribes to home phone service with the company: Yes, No
+- Avg Monthly Long Distance Charges: Indicates the customer’s average long distance charges, calculated to the end of the quarter specified above.
+- Multiple Lines: Indicates if the customer subscribes to multiple telephone lines with the company: Yes, No
+- Internet Service: Indicates if the customer subscribes to Internet service with the company: No, DSL, Fiber Optic, Cable.
+- Avg Monthly GB Download: Indicates the customer’s average download volume in gigabytes, calculated to the end of the quarter specified above.
+- Online Security: Indicates if the customer subscribes to an additional online security service provided by the company: Yes, No
+- Online Backup: Indicates if the customer subscribes to an additional online backup service provided by the company: Yes, No
+- Device Protection Plan: Indicates if the customer subscribes to an additional device protection plan for their Internet equipment provided by the company: Yes, No
+- Premium Tech Support: Indicates if the customer subscribes to an additional technical support plan from the company with reduced wait times: Yes, No
+- Streaming TV: Indicates if the customer uses their Internet service to stream television programing from a third party provider: Yes, No. The company does not charge an additional fee for this service.
+- Streaming Movies: Indicates if the customer uses their Internet service to stream movies from a third party provider: Yes, No. The company does not charge an additional fee for this service.
+- Streaming Music: Indicates if the customer uses their Internet service to stream music from a third party provider: Yes, No. The company does not charge an additional fee for this service.
+- Unlimited Data: Indicates if the customer has paid an additional monthly fee to have unlimited data downloads/uploads: Yes, No
+- Contract: Indicates the customer’s current contract type: Month-to-Month, One Year, Two Year.
+- Paperless Billing: Indicates if the customer has chosen paperless billing: Yes, No
+- Payment Method: Indicates how the customer pays their bill: Bank Withdrawal, Credit Card, Mailed Check
+- Monthly Charge: Indicates the customer’s current total monthly charge for all their services from the company.
+- Total Charges: Indicates the customer’s total charges, calculated to the end of the quarter specified above.
+- Churn: Indicate if the customer churns: Yes, No
 
-- Timestamp
-- Age
-- Gender
-- Country
-- state: If you live in the United States, which state or territory do you live in?
-- self_employed: Are you self-employed?
-- family_history: Do you have a family history of mental illness?
-- treatment: Have you sought treatment for a mental health condition?
-- work_interfere: If you have a mental health condition, do you feel that it interferes with your work?
-- no_employees: How many employees does your company or organization have?
-- remote_work: Do you work remotely (outside of an office) at least 50% of the time?
-- tech_company: Is your employer primarily a tech company/organization?
-- benefits: Does your employer provide mental health benefits?
-- care_options: Do you know the options for mental health care your employer provides?
-- wellness_program: Has your employer ever discussed mental health as part of an employee wellness program?
-- seek_help: Does your employer provide resources to learn more about mental health issues and how to seek help?
-- anonymity: Is your anonymity protected if you choose to take advantage of mental health or substance abuse treatment resources?
-- leave: How easy is it for you to take medical leave for a mental health condition?
-- mentalhealthconsequence: Do you think that discussing a mental health issue with your employer would have negative consequences?
-- physhealthconsequence: Do you think that discussing a physical health issue with your employer would have negative consequences?
-- coworkers: Would you be willing to discuss a mental health issue with your coworkers?
-- supervisor: Would you be willing to discuss a mental health issue with your direct supervisor(s)?
-- mentalhealthinterview: Would you bring up a mental health issue with a potential employer in an interview?
-- physhealthinterview: Would you bring up a physical health issue with a potential employer in an interview?
-- mentalvsphysical: Do you feel that your employer takes mental health as seriously as physical health?
-- obs_consequence: Have you heard of or observed negative consequences for coworkers with mental health conditions in your workplace?
-- comments: Any additional notes or comments
+ 
 
 </details>
 
@@ -61,18 +58,18 @@ Can you predict whether a patient should be treated of his/her mental illness or
 <div align="center">
 First 10 rows
 
-|Timestamp|Age|	Gender|	Country|	state|	self_employed|	family_history|	treatment|	work_interfere|	no_employees|	remote_work|	tech_company|	benefits|	care_options|	wellness_program|	seek_help|	anonymity|	leave|	mental_health_consequence|	phys_health_consequence|	coworkers|	supervisor|	mental_health_interview|	phys_health_interview|	mental_vs_physical|	obs_consequence|	comments|
-|:----|:-----|:----|:----|:----|:----|:----|:----|:----|:-----|:----|:----|:----|:----|:----|:----|:----|:-----|:----|:----|:----|:----|:----|:----|:----|:----|:----|
-2014-08-27 11:29:31|	37|	Female|	United States|	IL|	NA|	No|	Yes|	Often|	6-25|	No|	Yes|	Yes|	Not sure|	No|	Yes|	Yes|	Somewhat easy|	No|	No|	Some of them|	Yes|	No|	Maybe|	Yes|	No|	NA|
-2014-08-27 11:29:37|	44|	M|	United States|	IN|	NA|	No|	No|	Rarely|	More than 1000|	No|	No|	Don't know|	No|	Don't know|	Don't know|	Don't know|	Don't know|	Maybe|	No|	No|	No|	No|	No|	Don't know|	No|	NA|
-2014-08-27 11:29:44|	32|	Male|	Canada|	NA|	NA|	No|	No|	Rarely|	6-25|	No|	Yes|	No|	No|	No|	No|	Don't know|	Somewhat difficult|	No|	No|	Yes|	Yes|	Yes|	Yes|	No|	No|	NA|
-2014-08-27 11:29:46|	31|	Male|	United Kingdom|	NA	|NA	|Yes	|Yes	|Often	|26-100	|No	|Yes	|No	|Yes	|No	|No	|No	|Somewhat difficult	|Yes	|Yes	|Some of them	|No	|Maybe	|Maybe	|No	|Yes	|NA|
-2014-08-27 11:30:22|	31|	Male|	United States|	TX	|NA|	No|	No|	Never|	100-500|	Yes|	Yes|	Yes|	No|	Don't know|	Don't know|	Don't know|	Don't know|	No|	No|	Some of them|	Yes	|Yes	|Yes	|Don't know	|No	|NA|
-2014-08-27 11:31:22|	33|	Male|	United States|	TN|	NA|	Yes|	No|	Sometimes|	6-25|	No|	Yes|	Yes|	Not sure|	No|	Don't know|	Don't know|	Don't know|	No|	No|	Yes|	Yes|	No|	Maybe|	Don't know	|No|	NA|
-2014-08-27 11:31:50|	35|	Female|	United States|	MI|	NA|	Yes|	Yes|	Sometimes|	1-5|	Yes|	Yes|	No|	No|	No|	No|	No|	Somewhat difficult|	Maybe|	Maybe|	Some of them|	No|	No|	No|	Don't know|	No|	NA|
-2014-08-27 11:32:05|	39|	M|	Canada|	NA|	NA|	No|	No|	Never|	1-5|	Yes|	Yes|	No|	Yes|	No|	No	|Yes|	Don't know|	No|	No|	No|	No|	No|	No|	No|	No|	NA|
-2014-08-27 11:32:39|	42|	Female|	United States|	IL	|NA	|Yes	|Yes	|Sometimes	|100-500	|No	|Yes	|Yes	|Yes	|No	|No	|No	|Very difficult	|Maybe	|No	|Yes	|Yes	|No	|Maybe	|No	|No	|NA|
-2014-08-27 11:32:43|	23|	Male|	Canada|	NA|	NA|	No|	No|	Never|	26-100|	No|	Yes|	Don't know|	No|	Don't know|	Don't know|	Don't know|	Don't know|	No|	No|	Yes|	Yes|	Maybe|	Maybe|	Yes|	No|	NA|
+| customerID   | gender   |   SeniorCitizen | Partner   | Dependents   |   tenure | PhoneService   | MultipleLines    | InternetService   | OnlineSecurity   | OnlineBackup   | DeviceProtection   | TechSupport   | StreamingTV   | StreamingMovies   | Contract       | PaperlessBilling   | PaymentMethod             |   MonthlyCharges |   TotalCharges | Churn   |
+|:-------------|:---------|----------------:|:----------|:-------------|---------:|:---------------|:-----------------|:------------------|:-----------------|:---------------|:-------------------|:--------------|:--------------|:------------------|:---------------|:-------------------|:--------------------------|-----------------:|---------------:|:--------|
+| 7590-VHVEG   | Female   |               0 | Yes       | No           |        1 | No             | No phone service | DSL               | No               | Yes            | No                 | No            | No            | No                | Month-to-month | Yes                | Electronic check          |            29.85 |          29.85 | No      |
+| 5575-GNVDE   | Male     |               0 | No        | No           |       34 | Yes            | No               | DSL               | Yes              | No             | Yes                | No            | No            | No                | One year       | No                 | Mailed check              |            56.95 |        1889.5  | No      |
+| 3668-QPYBK   | Male     |               0 | No        | No           |        2 | Yes            | No               | DSL               | Yes              | Yes            | No                 | No            | No            | No                | Month-to-month | Yes                | Mailed check              |            53.85 |         108.15 | Yes     |
+| 7795-CFOCW   | Male     |               0 | No        | No           |       45 | No             | No phone service | DSL               | Yes              | No             | Yes                | Yes           | No            | No                | One year       | No                 | Bank transfer (automatic) |            42.3  |        1840.75 | No      |
+| 9237-HQITU   | Female   |               0 | No        | No           |        2 | Yes            | No               | Fiber optic       | No               | No             | No                 | No            | No            | No                | Month-to-month | Yes                | Electronic check          |            70.7  |         151.65 | Yes     |
+| 9305-CDSKC   | Female   |               0 | No        | No           |        8 | Yes            | Yes              | Fiber optic       | No               | No             | Yes                | No            | Yes           | Yes               | Month-to-month | Yes                | Electronic check          |            99.65 |         820.5  | Yes     |
+| 1452-KIOVK   | Male     |               0 | No        | Yes          |       22 | Yes            | Yes              | Fiber optic       | No               | Yes            | No                 | No            | Yes           | No                | Month-to-month | Yes                | Credit card (automatic)   |            89.1  |        1949.4  | No      |
+| 6713-OKOMC   | Female   |               0 | No        | No           |       10 | No             | No phone service | DSL               | Yes              | No             | No                 | No            | No            | No                | Month-to-month | No                 | Mailed check              |            29.75 |         301.9  | No      |
+| 7892-POOKP   | Female   |               0 | Yes       | No           |       28 | Yes            | Yes              | Fiber optic       | No               | No             | Yes                | Yes           | Yes           | Yes               | Month-to-month | Yes                | Electronic check          |           104.8  |        3046.05 | Yes     |
+| 6388-TABGU   | Male     |               0 | No        | Yes          |       62 | Yes            | No               | DSL               | Yes              | Yes            | No                 | No            | No            | No                | One year       | No                 | Bank transfer (automatic) |            56.15 |        3487.95 | No      |
 
 </div>
 </div>
@@ -82,27 +79,17 @@ First 10 rows
 ---
 ## 🔎  Explore data and test model
 
-### The Process is following - [Code & Presentation](https://github.com/anhtuan0811/Mental-Health/blob/main/EDA%20and%20Machine%20Learning.md) or [Only Code](https://github.com/anhtuan0811/Mental-Health/blob/main/Mental_Health_Project.ipynb)
+### The Process is following - [Code & Presentation]or [Only Code]
 
-- Import Library and dataset
-- Explore data
-- Relationship Charts
-- Encoding  
-- Correlation Matrix
-- Scaling & Fitting
-- Tuning
-- Evaluate Model
-- Success method plt
-- Creating predictions on test set
 
 
 ---
 
 # 🧾 What can you practice with this case study?
 - Python
-  - pandas, numpy,matplotlib,seaborn, scpipy.
-  - Cleaning, check Null values, transforming.
-  - Running model,Scaling model, Fiting model, Testing model. 
-  - Def function.
-  
+ - Pandas, numpy, matplotlib, seaborn, scipy.
+ - Data cleaning, checking for null values, and data transformation.
+ - Running models, fitting models, and testing models.
+ - Defining functions.
+ - Using SMOTE-ENN to address data imbalance.
 
