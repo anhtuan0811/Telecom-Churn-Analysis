@@ -19,6 +19,7 @@ Can you predict whether customers will churn based on customer data ?
 # :bookmark_tabs:Example Datasets
 
 <details><summary> 👆🏼 Click to expand Dataset information </summary>
+
 - CustomerID: A unique ID that identifies each customer.
 - Gender: Indicate if the customer is a male or a female
 - SeniorCitizen: Indicate if the customer is a senior citizen: 1, 0
@@ -87,9 +88,9 @@ First 10 rows
 
 # 🧾 What can you practice with this case study?
 - Python
- - Pandas, numpy, matplotlib, seaborn, scipy.
- - Data cleaning, checking for null values, and data transformation.
- - Running models, fitting models, and testing models.
- - Defining functions.
- - Using SMOTE-ENN to address data imbalance.
+  - Pandas, numpy,matplotlib,seaborn.
+  - Data cleaning, checking for null values, and data transformation.
+  - Running models, fitting models, and testing models.
+  - Using SMOTE-ENN to address data imbalance.
+  - Defining function.
 
