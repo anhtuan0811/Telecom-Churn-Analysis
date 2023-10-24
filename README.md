@@ -16,6 +16,7 @@ The Telco customer churn data contains information about a fictional telco compa
 ### ❓ Question
 Can you predict whether customers will churn based on customer data ?
 
+---
 # :bookmark_tabs:Example Datasets
 
 <details><summary> 👆🏼 Click to expand Dataset information </summary>
