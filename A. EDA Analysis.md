@@ -5,17 +5,16 @@
 
 ## :books: Table of Contents <!-- omit in toc -->
 
-- [🔢 PYTHON - GOOGLE COLAB](#-python---google-colab)
+- [🔢 PYTHON - GOOGLE COLAB]
   - [Import Library and dataset](#-import-library-and-dataset)
-  - [Explore data ](#1%EF%B8%8F⃣-explore-data-analysis)
-  - [Data Relationship](#2%EF%B8%8F⃣-some-charts-to-see-data-relationship)
-  - [Encoding](#3%EF%B8%8F⃣encoding)
-  - [Correlation Matrix](#4%EF%B8%8F⃣-correlation-matrix)
-  - [Fitting](#5%EF%B8%8F⃣fitting)
-  - [Tuning](#6%EF%B8%8F⃣tuning)
-  - [Evaluate Model](#7%EF%B8%8F⃣-evaluate-models)
-  - [Success method plt](#8%EF%B8%8F⃣-success-method-plot)
-  - [Creating predictions on test set](#9%EF%B8%8F⃣-creating-predictions-on-test-set)
+  - [Overall Information ](#1%EF%B8%8F⃣-overall-information)
+  - [Data Cleaning](#2%EF%B8%8F⃣-data-cleaning)
+  - [Data exploration](#3%EF%B8%8F⃣--data-exploration)
+  - [Fitting](#4%EF%B8%8F⃣-fitting-model)
+  - [Tuning](#5%EF%B8%8F⃣-tuning)
+  - [Evaluate Model](6%EF%B8%8F⃣-evaluate-models)
+  - [Pickling Model](#7%EF%B8%8F⃣-pickling-the-model)
+
 
 ---
 
@@ -300,7 +299,7 @@ def uniplot(df,col,title,hue =None):
 
 ---
 
-### 5️⃣ Fitting Model
+### 4️⃣ Fitting Model
 
 <details><summary> Splitting Dataset  </summary> 
 <br>
@@ -317,7 +316,7 @@ X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.2, random_state =
 </details>
   
 ---  
-###  6️⃣Tuning
+###  5️⃣ Tuning
 
 <br>
 Firstly, I would write a function to evaluate the models (Confusion matrix & accuracy_score) and also applied it to Tunning Function too. 
@@ -401,7 +400,7 @@ def RandomSearch(model, param_dist):
 
 
 ---  
-### 7️⃣ Evaluate Models
+### 6️⃣ Evaluate Models
   
 
 
@@ -470,7 +469,7 @@ RandomSearch(model_rf, param_dist)
 
 ---
 
-### 8️⃣ Pickling the model
+### 7️⃣ Pickling the model
 
 <br>
 
