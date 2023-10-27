@@ -474,6 +474,7 @@ RandomSearch(model_rf, param_dist)
 <br>
 
   - Our final model RF Classifier with SMOTEENN, is now ready and dumped in model.sav, which we will use and prepare API's so that we can access our model from UI.
+<details><summary> Click to expand code </summary>
 
 ![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/880246cd-37be-4d12-94a0-3298b88e4d30)
   
