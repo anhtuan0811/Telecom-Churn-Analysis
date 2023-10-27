@@ -1,4 +1,4 @@
-# 🛒 Case Study - Predictors of mental health illness
+# 🛒 Case Study - Predictors of telecom churn
 
 <p align="right"> Using Python - Google Colab </p>
 
@@ -43,413 +43,261 @@ df = pd.read_csv('WA_Fn-UseC_-Telco-Customer-Churn.csv')
 </details>
 
 ---
-### 1️⃣ Explore Data Analysis </summary>
+### 1️⃣ Overall information
+<details><summary> Click to expand code </summary>
 
-- There are 3 things that i would to do in this step:
-  - The overall info 
-  - Cleaning missing values
-  - Checking values of all columns
-
-<details><summary> 1.1 The  Overall Infomation </summary>
-  
 ```python
 df.head() 
 ```
-![image](https://user-images.githubusercontent.com/101379141/203503490-5e514c69-a860-473a-8757-cd83a3633716.png)
-    
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/6fd98ca4-0510-41e5-911c-d2393ac1df07)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/e4e71f00-47b5-45dc-93ab-2e053b50ab4c)
+ 
 ```python
 df.info()
 ```  
-![image](https://user-images.githubusercontent.com/101379141/203503625-bfb615ca-a92a-4448-933c-205182de4e92.png)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/ae4c6f5f-3f1a-49cd-8a14-41b7de22a4ac)
+<br> Here, we don't have any missing data.
+
+```
   
 ```python
 df.describe()
-```    
-![image](https://user-images.githubusercontent.com/101379141/203503686-fe20ffc2-6892-4341-9040-3fff5d5b5a85.png)
+```
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/3fed8325-458a-4b33-b732-2ea476d434d1)
 
-### 2️⃣ Data Cleaning </summary>
-<details><summary>  2.1. Create a copy of base data for manupulation & processing
+- SeniorCitizen is actually a categorical variable, hence the 25%-50%-75% distribution is not proper.
+- 75% of customers have tenure less than 55 months.
+- The average Monthly charges are USD 64.76, whereas 25% of customers pay more than USD 89.85 per month.
+
+
+</details>
+
+---
+
+### 2️⃣ Data Cleaning
+<details><summary>  2.1. Create a copy of base data for manupulation & processing </summary>
 
 ```python
 df1 = df.copy()
+
 ```
-<details><summary>  2.2. Convert Total Charges to numerical data type
+
+</details>
+
+<details><summary>  2.2. Convert Total Charges to numerical data type </summary>
 
 ```python
 df1.TotalCharges = pd.to_numeric(df1.TotalCharges, errors='coerce')
 df1.isnull().sum()
 
-<br> 
+```
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/91eaa372-1ae7-4c76-a00e-3b5d26c45d1d)
+<br>  As we can see there are 11 missing values in TotalCharges column. Since the % of these records compared to total dataset is very low ie 0.15%, it is safe to ignore them from further processing.
+
+```python
+df1.dropna(how = 'any', inplace = True)
+```
+</details>
+<details><summary>  2.3. Divide customers into bins based on tenure </summary>
+
+```python
+labels = ["{0} - {1}".format(i, i + 11) for i in range(1, 72, 12)]
+
+df1['tenure_group'] = pd.cut(df1.tenure, range(1, 80, 12), right=False, labels=labels)
+df1['tenure_group'].value_counts()
+```
+
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/58a0e666-d31c-4913-82e6-e4985dda9ebd)
+
+
 
 </details>
-   
-```python
-df.drop(columns = ['Timestamp','state','Country','comments'], inplace = True)
-df.isnull().sum()
-```
-![image](https://user-images.githubusercontent.com/101379141/203506299-8d4aef53-5e1f-49fd-8940-03d0c286e987.png)
+<details><summary>  2.4. Remove columns not required for processing  </summary>
 
+```python
+df1.drop(columns= ['customerID','tenure'], axis=1, inplace=True)
+df1.head()
+
+```
 </details>
- 
-<details><summary>  1.2.b Clean missing values of self_employed column  </summary>
-
- ``` python
-df['self_employed'].unique() 
-```
-![image](https://user-images.githubusercontent.com/101379141/203506826-e7248295-e214-4fd2-bd75-c2391eb6f833.png)
-  
-  
-```python
-df['self_employed'].value_counts()
-```
-![image](https://user-images.githubusercontent.com/101379141/203506911-41280ea0-f49e-4196-b4bd-9497361deed7.png)
-
-```python
-# Replace Null values by the mode 
-df['self_employed'].replace(np.NaN,'No',inplace=True)
-df['self_employed'].unique()
-```
-![image](https://user-images.githubusercontent.com/101379141/203507148-ad53076c-7f10-4801-a248-d94f90f09baa.png)
-
- </details> 
-
-<details><summary> 1.2.c Clean missing values of work_interfere column </summary>
-
-```python
-df['work_interfere'].unique()
-```
-![image](https://user-images.githubusercontent.com/101379141/203507974-d8980080-f83a-451d-b1bc-ecd729da0aa6.png)
-
-```python
-df['work_interfere'].value_counts()
-```
-![image](https://user-images.githubusercontent.com/101379141/203508032-bac8d92a-268a-4841-8cf6-d24f17911047.png)
-  
-```python
-# Replace Null values
-df['work_interfere'].replace(np.NaN, "Don't Know",inplace = True)
-df['work_interfere'].value_counts()
-```
-![image](https://user-images.githubusercontent.com/101379141/203508172-adf418ec-db39-473b-bbe8-8fd0ffc85abf.png)
-
-</details> 
-
-<details><summary> Dataset with 0 Null values </summary>
-
-```python
-df.isnull().sum()
-```
-![image](https://user-images.githubusercontent.com/101379141/203508526-5e04e1b0-ae0a-4dfa-9717-c0dc7fa2a644.png)
-
-</details> 
-  
-</details> 
-
-<details><summary> 1.3. Checking values of all columns </summary>  
-
-<br> After check values of all columns, we can see that there are some outliers in Gender and Age column 
-
-<details><summary> Code here </summary> 
-  
-```python
-my_list = df.columns.values.tolist()
-
-for column in my_list:
-  print(column)
-  print(df[column].unique())  
-```
-![image](https://user-images.githubusercontent.com/101379141/203513372-7c48e84f-c537-478a-ab5c-09abb088f4b5.png)
-![image](https://user-images.githubusercontent.com/101379141/203513431-d8c289e9-7e02-4aad-b761-bb13d1f93d98.png)
-
-</details> 
-
-<details><summary> 1.3.a Age Column </summary>  
-
-```python
-from matplotlib.pyplot import figure
-
-figure(figsize=(10, 10))
-df['Age'].value_counts().plot( kind= 'bar')  
-```
-![image](https://user-images.githubusercontent.com/101379141/203514344-2a02fc03-4f88-46a1-be28-ddd5d1fa556e.png)
-
-```python
-outliers =[]
-for age in df['Age'].values:
-  if age < 0 or age >100 :
-    outliers.append(age)
-    print(outliers)   
-```
-![image](https://user-images.githubusercontent.com/101379141/203514466-7edf6a18-6b0a-4bac-887d-33fd9c2908da.png)
-
-```python
-#Because There is only 5 outliers comparing total 1259 entries, so we can remove values of outliers
-
-df = df.loc[(df['Age'] > 18) & (df['Age'] <100)]
-                                                 
-# 0 values means no outliers 
-print(df[df["Age"].isin(outliers)] )
-                                                
-```
-![image](https://user-images.githubusercontent.com/101379141/203514808-8a94c840-5fe3-46c7-b6a0-489d50ccaeb3.png)
-
-```python
-#Grouping Age
-Age_Group = pd.cut(df['Age'],bins=[17,23,30,61,100],labels=['18-22', '23-30 ','31-50', '> 51'])
-df.insert(23,'Age_Group',Age_Group)
-df['Age_Group'].unique()                                                 
-``` 
-![image](https://user-images.githubusercontent.com/101379141/203514958-99f8b983-74e6-468b-9add-8bd849857770.png)     
-
-```python
-# Drop Age column, because we create Age grouped                                                 
-df = df.drop(columns='Age')                                                 
-```                                                
-</details> 
-  
-<details><summary> 1.3.b Gender Column </summary>  
-
-```python
-df1= df['Gender'].unique()
-print(df1)
-```
-![image](https://user-images.githubusercontent.com/101379141/203515507-eec125bc-adc6-44a8-8255-913128d85441.png)
-  
-```python
-male_string = ["M", "Male", "male", "m", "Male-ish", "maile", "Cis Male", "Mal", "Male (CIS)","Make", "Male ", "Man","msle", "Mail", "cis male","Malr","Cis Man"]
-female_string = ["Female", "female", "Cis Female", "F","Woman",  "f", "Femake","woman", "Female ", "cis-female/femme","Female (cis)","femail"]
-others_string = ["Trans-female", "something kinda male?", "queer/she/they", "non-binary","Nah", "all", "Enby", "fluid", "Genderqueer", "Androgyne", "Agender", "male leaning androgynous", "Guy (-ish) ^_^", "Trans woman", "Neuter", "Female (trans)", "queer", "ostensibly male, unsure what that really means"]           
-
-for index, row in df.iterrows():
-
-    if str(row.Gender) in male_string:
-        df['Gender'].replace(to_replace=row.Gender, value='male', inplace=True)
-
-    if str(row.Gender) in female_string:
-        df['Gender'].replace(to_replace=row.Gender, value='female', inplace=True)
-
-    if str(row.Gender) in others_string:
-        df['Gender'].replace(to_replace=row.Gender, value='other', inplace=True)
-
-
-print(df['Gender'].unique())
-```
-![image](https://user-images.githubusercontent.com/101379141/203515581-7ec6c102-e6e8-413e-95eb-f5cd50487d08.png)
-  
-</details> 
-</details> 
-</details> 
-</details> 
 
 ---
- ### 2️⃣ Some charts to see data relationship
+
+### 3️⃣  Data exploration
 
 
-<details><summary> Age Group & Treatment  </summary>
+<details><summary> Churn  </summary>
 
-<br>
-  
---> The possibility of being mental illness is increasing by age.
  ```python
-# Age & Treatment
+# Churn
+df['Churn'].value_counts().plot(kind='barh', figsize=(8, 6))
+plt.xlabel("Count", labelpad=14)
+plt.ylabel("Target Variable", labelpad=14)
+plt.title("Count of TARGET Variable per category", y=1.02)
 
-g = sns.FacetGrid(df, col ='treatment', height=8)
-g = g.map(sns.countplot, "Age_Group")
+```
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/e173a944-49b8-47eb-b17e-af775ff9d1e1)
+```python
 
-for ax in g.axes.flat:
-    labels = ax.get_xticklabels() # get x labels
-    for i,l in enumerate(labels):
-        if(i == 0): labels[i] = '18-22'
-        elif(i ==1.0):labels[i] = '23-30'
-        elif(i ==2.0):labels[i] = '31-50'
-        elif(i ==3.0):labels[i] = '> 51'  
-    ax.set_xticklabels(labels, rotation=30) # set new labels
-plt.show()
- ```
-![image](https://user-images.githubusercontent.com/101379141/204680210-9444de57-07e6-4fdf-81de-0daeb2af2991.png)
-  
-</details>
+100*df['Churn'].value_counts()/len(df['Churn'])
+```
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/629fb40c-b710-44ea-b2b5-2762abeb3311)
 
-<details><summary> Gender & Treatment  </summary> 
 <br>
-  --> Male has higher possibility of being mental illness comparing to Female.
-    
-```python
-#Gender & Treatment
-df1 = df
-df1['Gender'] = df1['Gender'].astype('category')
-print(df1['Gender'].unique())
-plt.figure(figsize=(12,8))
-g = sns.FacetGrid(df1, col='treatment', height=8)
-g.map(sns.countplot,'Gender')
-
-for ax in g.axes.flat:
-    labels = ax.get_xticklabels() # get x labels
-    for i,l in enumerate(labels):
-        if(i == 0): labels[i] = 'Female'
-        elif(i ==1):labels[i] = 'Male'
-        else: labels[i] ='Other'  
-    ax.set_xticklabels(labels, rotation=30) # set new labels
-plt.show()
-  
-```
-![image](https://user-images.githubusercontent.com/101379141/203714266-11193591-f268-4de4-b503-df74f5d67181.png)
-  
-</details>
- 
-<details><summary> Family history & Treatment  </summary> 
-<br>
-
---> If your family members has experience the mental illness, people has high possibility of being mental illness too
-  
-```python
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-plt.figure(figsize=(10, 6))
-
-sns.countplot(x='family_history', data=df, hue='treatment', palette=['red', 'gray'])
-
-leg = plt.legend(loc='best', title='Seek Treatment')
-leg._legend_box.align = "left"
-plt.xlabel('Family History of Mental Illness', labelpad=10)
-plt.ylabel('Count', labelpad=10)
-plt.title('Relationship between Family History and Treatment', pad=15)
-
-plt.show()
-```
-![1](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/518af31a-2742-4cbb-be19-f0e1d55324a9)
-
-   
+--> In terms of the number of 'yes' and 'no' responses, Data is highly imbalanced, ratio = 73:27
 </details>
 
-<details><summary> Obs_consequence & Treatment  </summary> 
-<br>
-
---> It's evident that companies prioritizing mental health make it easier for employees to take mental health leave
+<details><summary> Plot distibution of individual predictors by churn </summary> 
   
 ```python
-plt.figure(figsize=(10,6)) 
-mvp = df[((df['mental_vs_physical'] == 'Yes') | (df['mental_vs_physical'] == 'No')) & (df['leave'] != "Don't know")]['leave']
-test = df[((df['mental_vs_physical'] == 'Yes') | (df['mental_vs_physical'] == 'No')) & (df['leave'] != "Don't know")]['mental_vs_physical']
-
-order = df[((df['mental_vs_physical'] == 'Yes') | (df['mental_vs_physical'] == 'No')) & (df['leave'] != "Don't know")]['leave'].value_counts().index
-sns.countplot(y=mvp, data=df, order=order, hue=test, palette=['green', 'red'])
-
-plt.xlabel('Count', labelpad=10)
-plt.ylabel('Taking Leave for Mental Health', labelpad=20)
-plt.title('Relationship between mental_vs_physical and Leave', pad=15)
-
-leg = plt.legend(loc='best', title='Mental Health Important')
-leg._legend_box.align = "center"
-```
-![2](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/34e225dd-98b3-4532-82ee-35ea2fb8d3ae)
-
-</details>
-
-<details><summary> No_employees vs oworkers </summary> 
-<br>
-
---> We can't see the relationship between Care Option and Treatment clearly. 
+for i, predictor in enumerate(df1.drop(columns=['Churn', 'TotalCharges', 'MonthlyCharges'])):
+    plt.figure(i, figsize=(10, 6))
+    sns.countplot(data=df1, x=predictor, hue='Churn')
   
-```python
-
-plt.figure(figsize=(10,6)) # Size of the figure
-order = ['1-5', '6-25', '26-100', '100-500', '500-1000', 'More than 1000']
-ax = sns.countplot(x='no_employees', hue='coworkers',  data=df, order=order, palette=['dodgerblue', 'maroon', 'limegreen'])
-sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
-plt.xlabel('Number of Employees', labelpad=10)
-plt.ylabel('Count', labelpad=10);
-plt.title('Relationship between Number of Employees and Observed Consequences', pad=15);
 ```
-![3](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/eda7c2e2-472c-4ed3-9653-d3bd2170110f)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/518604d6-3b40-4358-ac64-bd6bc90bd641)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/9599cc59-1524-46c1-8794-3b957fde7774)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/3753f60a-445c-4659-9ee3-2f4d220efcee)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/c35463c7-e707-4642-8dff-eab7a8e9ac30)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/a9a39d24-f9b0-4672-8c35-6e149a45a174)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/b90a1827-0661-4a69-bcea-3726c9be53aa)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/d95cc63f-3cbd-4c03-b66b-c9ddb154d553)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/f6465c8c-ff10-48e1-af8f-e18122243556)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/8b1a502d-cca9-474d-91c2-f8cbf78d97f3)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/a91df331-285c-47b5-8b7b-a8d5f7a57768)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/f9fac884-9880-4222-b72f-8c92fb9d8b38)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/56666805-5fbc-401e-95ac-9e0f4e789f26)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/16f4689f-69df-4bd9-8f6e-1a8175dd1bde)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/ded64753-a7ab-495f-bb6e-38e672db7a9c)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/8db41eab-bc6d-4e83-9648-c69bb249f92f)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/b4854e77-9e25-4e7e-b409-a99af8a346f9)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/71c37f51-a96b-44af-b7f1-4a64db363bb8)
 
-</details>
-
-<details><summary> Treatment  </summary> 
-<br>
---> In terms of the number of 'yes' and 'no' responses, there is a relatively balanced distribution
-
-```python
-
-plt.figure(figsize = (10,6));
-treat = sns.countplot(data = df,  x = 'treatment');
-treat.bar_label(treat.containers[0]);
-plt.title('Total number of individuals who received treatment or not');
-```
-![4](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/6bed490a-4a85-48c0-9235-43cef1a890b6)
-
-</details>
-
---- 
-### 3️⃣  Encoding
-
-- There are 2 things I would do in this step:
-  - We encode (convert) the feature columns excluding Age column into number for model analyst.
-    - We dont encode the Age column because We grouped Age column into Age_group column and we encoded the Age_Group.
-  - Create label feature for up-comming steps
-
-<details><summary> Label-Enconding  </summary>
-  
-```python
-label_dict = {}
-#Label-Enconding
-le = preprocessing.LabelEncoder()
-for feature in df.columns:
-  if feature != 'Age':
-    le.fit(df[feature])
-    le_name_mapping = dict(zip(le.classes_, le.transform(le.classes_)))
-    df[feature] = le.transform(df[feature])
-    # Get labels
-    labelKey = 'label_' + feature
-    labelValue = [*le_name_mapping]
-    label_dict[labelKey] =labelValue
-  else:
-    label_dict['label_Age'] = list(df['Age'])
-
-```
-```python
-df.info()
-df.head() 
-```
-![image](https://user-images.githubusercontent.com/101379141/203689607-cac4134c-d4c6-4d42-809a-834013789ee5.png)
-  
-```python
-for key, value in label_dict.items():     
-    print(key, value)
-```
-![image](https://user-images.githubusercontent.com/101379141/203689659-b26ccd3c-3538-4125-8af9-d6b62cba9e5e.png)
-  
-</details>
-
----
-### 4️⃣ Correlation Matrix.
-
-- Variability comparison between categories of variables 
-
---> The final result showed that The strongest relationship between target variable (treatment) and feature variable is work_interfere columns with the question (If you have a mental health condition, do you feel that it interferes with your work?) and family_history (Do you have a family history of mental illness?)
-
---> It is clear that if we work or live in an environment nearly people who has mental illness or full of job stress, we could be affected. 
-
-<details><summary> The  Code Here  </summary>
-
-
-
-```python
-#treatment correlation matrix
-f, ax = plt.subplots(figsize=(12, 9))
-corrmat = df.corr()
-k = 23 #number of variables for heatmap
-cols = corrmat.nlargest(k, 'treatment')['treatment'].index
-cm = np.corrcoef(df[cols].values.T)
-sns.set(font_scale=1.25)
-hm = sns.heatmap(cm, cmap = 'Blues', cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'size': 10}, yticklabels=cols.values, xticklabels=cols.values)
-plt.show()
-```
-![5](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/555d6e19-9b00-4cf7-b6e4-e0e2ed5c5d9a)
 
 </details>
  
+<details><summary> Convert the target variable 'Churn' in a binary numeric variable  </summary> 
+
+```python
+df1['Churn'] = np.where(df1.Churn == 'Yes',1,0)
+```
+
+</details>
+
+<details><summary> Convert all the categorical variables into dummy variables  </summary> 
+  
+```python
+df1_dummies = pd.get_dummies(df1)
+df1_dummies.head()
+```
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/5defe553-2954-4c19-a455-24c49e1803c4)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/68b490b5-8830-40b7-be3b-bc25d31517f2)
+
+</details>
+
+<details><summary> Relationship between Monthly Charges and Total Charges </summary> 
+  
+```python
+sns.lmplot(data=df1_dummies, x='MonthlyCharges', y='TotalCharges', fit_reg=False)
+```
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/5c2d64ed-fafc-477a-a969-b7bad9b331e4)
+
+<br>
+
+--> Total Charges increase as Monthly Charges increase - as expected.
+</details>
+
+<details><summary> Churn by Monthly Charges and Total Charges  </summary> 
+
+
+```python
+
+Tot = sns.kdeplot(df1_dummies.TotalCharges[(df1_dummies["Churn"] == 0) ],
+                color="Red", shade = True)
+Tot = sns.kdeplot(df1_dummies.TotalCharges[(df1_dummies["Churn"] == 1) ],
+                ax =Tot, color="Blue", shade= True)
+Tot.legend(["No Churn","Churn"],loc='upper right')
+Tot.set_ylabel('Density')
+Tot.set_xlabel('Total Charges')
+Tot.set_title('Total charges by churn')
+
+```
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/ec471585-6f9c-460c-8f1a-16fdd43b3ecb)
+
+```python
+
+Mth = sns.kdeplot(df1_dummies.MonthlyCharges[(df1_dummies["Churn"] == 0) ],
+                color="Red", shade = True)
+Mth = sns.kdeplot(df1_dummies.MonthlyCharges[(df1_dummies["Churn"] == 1) ],
+                ax =Mth, color="Blue", shade= True)
+Mth.legend(["No Churn","Churn"],loc='upper right')
+Mth.set_ylabel('Density')
+Mth.set_xlabel('Monthly Charges')
+Mth.set_title('Monthly charges by churn')
+```
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/e8fd34d9-c170-4044-99d5-c97b09dc1d43)
+
+<br>
+
+--> Churn is high when Monthly Charges are high. Higher Churn at lower Total Charges. Nonetheless, when we merge the findings of three variables, specifically Tenure, Monthly Charges, and Total Charges, the situation becomes more evident. A situation with higher Monthly Charges and shorter tenure leads to lower Total Charges. As a result, all three elements, namely elevated Monthly Charges, reduced tenure, and decreased Total Charges, are associated with a heightened churn rate.
+</details>
+<details><summary> Build a correlation of all predictors with 'Churn'  </summary> 
+
+```python
+plt.figure(figsize=(20,8))
+df1_dummies.corr()['Churn'].sort_values(ascending = False).plot(kind='bar')
+
+```
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/ca7f3d6f-1f13-4cd0-ad2c-ec4e50b1ea55)
+
+- HIGH Churn seen in case of Month to month contracts, No online security, No Tech support, First year of subscription and Fibre Optics Internet
+- LOW Churn is seens in case of Long term contracts, Subscriptions without internet service and The customers engaged for 5+ years
+- Factors like Gender, Availability of PhoneService and Number of multiple lines have alomost NO impact on Churn
+
+</details>
+<details><summary> Univariate Analysis </summary> 
+
+```python
+new_df1_target0=df1.loc[df1["Churn"]==0]
+new_df1_target1=df1.loc[df1["Churn"]==1]
+
+def uniplot(df,col,title,hue =None):
+
+    sns.set_style('whitegrid')
+    sns.set_context('talk')
+    plt.rcParams["axes.labelsize"] = 20
+    plt.rcParams['axes.titlesize'] = 22
+    plt.rcParams['axes.titlepad'] = 30
+
+
+    temp = pd.Series(data = hue)
+    fig, ax = plt.subplots()
+    width = len(df[col].unique()) + 7 + 4*len(temp.unique())
+    fig.set_size_inches(width , 8)
+    plt.xticks(rotation=45)
+    plt.yscale('log')
+    plt.title(title)
+    ax = sns.countplot(data = df, x= col, order=df[col].value_counts().index,hue = hue,palette='bright')
+
+    plt.show()
+```
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/98d119b7-216b-4a4c-928f-71ea05843fc5)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/e78d0e22-ff73-4a70-aa4a-d2e13e57f586)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/751dc807-9b98-44ff-9146-8ac7e2d8a952)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/bb40b821-d79c-434c-92c2-12e5d3ec8991)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/2a6d78f9-13c4-46b5-b2ab-67aa844e5e94)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/36ec0272-489f-49f0-954e-3b5069de4fdf)
+
+</details>
+
+- These are some of the quick insights from this exercise:
+  - Electronic check medium are the highest churners
+  - Contract Type - Monthly customers are more likely to churn because of no contract terms, as they are free to go customers.
+  - No Online security, No Tech Support category are high churners
+  - Non senior Citizens are high churners
+
+</details>
+
 ---
 
 ### 5️⃣ Fitting Model
@@ -458,12 +306,12 @@ plt.show()
 <br>
  
 ```python
-y = df['treatment']
-X = df.drop(columns='treatment')
+X=df.drop('Churn',axis=1)
+y=df['Churn']
 
 
 # split dataset to test and training set (80% train, 20% test)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.2, random_state = 1)
   
 ```
 </details>
@@ -479,9 +327,6 @@ Firstly, I would write a function to evaluate the models (Confusion matrix & acc
 <details><summary> Writing Evaluate Model Function  </summary>
   
  ```python
-  
- methodDict = {} # This would be used for plotting the model's performance
-
 
 # Validation libraries
 from sklearn import metrics
@@ -518,7 +363,7 @@ def EvaluateModel(model, y_test, y_pred, plot=False):
     print('Classification Accuracy:' ,classification_report(y_test,y_pred))
     
   
-    
+    # Store the model's class name and its accuracy and training time in methodDict
     model_name = model.__class__.__name__
     methodDict[model_name] = {'accuracy': accuracy * 100, 'training_time': training_time}
  
@@ -539,7 +384,7 @@ kf = KFold(n_splits = 5, shuffle = True, random_state = 2)
 def RandomSearch(model, param_dist):
   reg_bay = RandomizedSearchCV(estimator=model,
                     param_distributions=param_dist,
-                    n_iter=20,  # search 20 times 
+                    n_iter=20, 
                     cv=kf,
                     n_jobs=8,
                     scoring='accuracy',
@@ -560,309 +405,80 @@ def RandomSearch(model, param_dist):
   
 
 
-<details><summary> Logistic Regression </summary>
-
-```python
-from sklearn.linear_model import LogisticRegression
-
-logreg = LogisticRegression()
-logreg.fit(X_train, y_train)
-    
-# make class predictions for the testing set
-y_pred = logreg.predict(X_test)
-    
-print('########### Logistic Regression ###############')
-    
-accuracy_score = EvaluateModel(logreg, y_test, y_pred, plot =True)
-      
-```
-(![6](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/d6de5bb8-d67f-4275-9259-a8bec414b9bc)
-
-  
-</details>  
-
-<details><summary> Gaussian Naive Bayes </summary>
-
-```python
-from sklearn.naive_bayes import GaussianNB
-model = GaussianNB()
-param_dist = {'var_smoothing': [1e-09, 1e-08, 1e-07]}
-print('Gaussian Naive Bayes')
-RandomSearch(model, param_dist)
-
-  
-```
-  
-![7](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/9368d78e-eb19-46c5-bc9e-62382df6eacc)
-
-    
-</details>  
-
-<details><summary> Support Vector Machine </summary>
-
-```python
-from sklearn.svm import SVC
-
-model_svc = SVC()
-
-param_dist_svc = {
-    'C': [0.1, 1, 10, 100],
-    'kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
-    'gamma': ['scale', 'auto']
-}
-
-print('Support Vector Machine')
-
-RandomSearch(model_svc, param_dist_svc)
-  
-```
-![image](https://user-images.githubusercontent.com/101379141/203885667-8f6fa33c-eb11-45e9-ab9e-9af9f4be8bb9.png)
-
-</details>  
-
-<details><summary> KNN </summary>
-
-```python
-model = KNeighborsClassifier()
-
-param_dist = {'n_neighbors': list(range(1,31)),
-              'weights' :['uniform', 'distance']}
-print('KNN')
-RandomSearch(model, param_dist)
-
-  
-```
-![8](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/b9ce6ec4-9777-45cf-9fbc-72ab00bc16b1)
-
-</details>  
-
-<details><summary> Decision-Tree </summary>
+<details><summary> Decision Tree </summary>
 
 ```python
 model_2 = DecisionTreeClassifier()
-param_dist = {'max_depth': list(range(1, 9)),
-              "max_features": list(range(1, len(X.columns))),
-              "min_samples_split": list(range(2, 9)),
-              "min_samples_leaf": list(range(1, 9)),
-              "criterion": ["gini", "entropy"],
-              }
+param_dist = {
+    'max_depth': [4, 6, 8, 10, 12],  
+    'min_samples_leaf': [2, 4, 6, 8, 10], 
+    'criterion': ['gini', 'entropy']  
+}
 print('Decision-Tree')
 RandomSearch(model_2, param_dist)
-```
-![9](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/d390ac10-8e2c-4482-b1bd-4e0ded2fb00b)
-
     
+
+      
+```
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/f67f1fc5-3453-454a-a2ff-cbea398056d8)
+<br>
+
+  - As you can see that the accuracy is quite low, and as it's an imbalanced dataset, we shouldn't consider Accuracy as our metrics to measure the model, as Accuracy is cursed in imbalanced datasets.
+Hence, we need to check recall, precision & f1 score for the minority class, and it's quite evident that the precision, recall & f1 score is too low for Class 1, i.e. churned customers.
+Hence, moving ahead to call SMOTEENN (UpSampling + ENN)
+
 </details>  
 
-<details><summary> Random Forest  </summary>
+<details><summary> Decision Tree with SMOTEEN  </summary>
+
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/35b4b96c-800b-4a4d-a150-5e57fedc9d2e)
+<br>
+
+  - Now we can see quite better results, i.e. Accuracy: 93 %, and a very good recall, precision & f1 score for minority class
+
+</details>  
+
+<details><summary> Random Forest </summary>
 
 ```python
-model_3 = RandomForestClassifier()
-estimators = [int(x) for x in np.linspace(start = 1, stop = 100, num = 10)]
-param_dist = {'n_estimators' : estimators,
-             'max_depth': list(range(1, 9)),
-              "max_features": list(range(1, len(X.columns))),
-              "min_samples_split": list(range(3, 9)),
+from sklearn.ensemble import RandomForestClassifier
+model_rf = RandomForestClassifier()
+param_dist = {'max_depth': list(range(1, 9)),
               "min_samples_leaf": list(range(1, 9)),
               "criterion": ["gini", "entropy"]}
+
+
 print('Random Forest')
-RandomSearch(model_3, param_dist)
+
+RandomSearch(model_rf, param_dist)
+
+  
 ```
-![10](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/b0b56eb9-e7fc-4430-b359-4b8410618e7b)
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/611be907-b85a-432d-9195-b0c6e9243b2b)
+
+</details>  
+
+<details><summary>Random Forest with SMOTEEN </summary>
+
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/54067250-97b9-4513-9512-a42cb7a00afb)
+<br>
+
+  - With RF Classifier, also we are able to get quite good results, infact better than Decision Tree. So we can use the Random Forest with SMOTEEN  best parameters
     
 </details>  
 
-<details><summary> AdaBoost </summary>
-
-```python
-tree = DecisionTreeClassifier(max_depth = 1)
-model = AdaBoostClassifier(base_estimator= tree, n_estimators= 100,random_state = 2)
-model.fit(X_train,y_train)
-y_pred = model.predict(X_test)
-
-print('AdaBoosting')
-
-EvaluateModel(model, y_test, y_pred, True)
-  
-```
-![11](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/445e414b-23ab-4eb7-b2b5-52169ffeb3b1)
-
-  
-</details>  
-
-<details><summary> Gradient Boosting </summary>
-
-```python
-model = GradientBoostingClassifier(n_estimators =100, max_depth =1,random_state = 2 )
-model.fit(X_train,y_train)
-y_pred = model.predict(X_test)
-
-print('GradientBoosting')
-
-EvaluateModel(model, y_test, y_pred, True)
-```
-![12](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/5879145e-369e-4ac0-8164-fcef6c285d1d)
-
-</details>  
-
-<details><summary> Bagging </summary>
-
-```python
-
-tree = DecisionTreeClassifier()
-
-model_4 = BaggingClassifier(base_estimator = tree, bootstrap_features=False, n_estimators = 100,random_state = 2)
-param_dist = {'base_estimator__max_depth' : [1,2,3]}
-
-print('Bagging')
-RandomSearch(model_4, param_dist)
-```
-![13](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/5e95e6a7-e2ce-4f9a-aa3c-dd4fb8bf636f)
-
-</details>  
-
-<details><summary> Light GBM </summary>
-
-```python
-
-import lightgbm as lgb
-model_lgb = lgb.LGBMClassifier()
-param_dist_lgb = {
-    'boosting_type': ['gbdt', 'dart', 'goss'],
-    'num_leaves': list(range(20, 150)),
-    'learning_rate': [0.001, 0.01, 0.1, 0.2, 0.3],
-    'subsample_for_bin': list(range(20000, 300000, 20000)),
-    'min_child_samples': list(range(20, 500, 5)),
-    'reg_alpha': [0, 0.1, 0.5, 1, 2],
-    'reg_lambda': [0, 0.1, 0.5, 1, 2],
-    'colsample_bytree': [0.6, 0.7, 0.8, 0.9, 1.0]
-}
-print('LightGBM Random Search')
-RandomSearch(model_lgb, param_dist_lgb)
-
-```
-![14](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/4fe66c1c-e3d4-48c3-b102-e05edf4b87fc)
-
-</details>  
-
-<details><summary> XG Boosting </summary>
-
-```python
-
-import xgboost as xgb
-model_xgb = xgb.XGBClassifier()
-param_dist_xgb = {
-    'max_depth': list(range(3, 10)),
-    'learning_rate': [0.001, 0.01, 0.1, 0.2, 0.3],
-    'n_estimators': [100, 300, 500, 800, 1000],
-    'min_child_weight': [1, 3, 5, 7],
-    'gamma': [0, 0.1, 0.2, 0.3, 0.4],
-    'subsample': [0.6, 0.7, 0.8, 0.9, 1.0],
-    'colsample_bytree': [0.6, 0.7, 0.8, 0.9, 1.0]
-}
-print('XGBoost Random Search')
-RandomSearch(model_xgb, param_dist_xgb)
-```
-![15](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/6718b5ae-da6a-447d-b0f7-3d3aacb60101)
-
-</details>  
-
-<details><summary> Stacking </summary>
-
-```python
-
-from sklearn.ensemble import StackingClassifier
-base_models = [
-    ('random_forest', RandomForestClassifier()),
-    ('gaussian_nb', DecisionTreeClassifier()),
-    ('k_neighbors', KNeighborsClassifier())
-]
-model_stacking = StackingClassifier(estimators=base_models)
-model_stacking.fit(X_train, y_train)
-y_pred = model_stacking.predict(X_test)
-EvaluateModel(model_stacking, y_test, y_pred, plot=True)
-```
-![16](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/9c3b4c16-bcbe-4b75-9115-3ab9c3351553)
-
-</details>  
 
 ---
 
-### 8️⃣ Success method plot
+### 8️⃣ Pickling the model
 
 <br>
-We would like to show the summary of models's performance to compare and select the best one.
-</br>
-<br>
 
-<details><summary> Code here </summary>
+  - Our final model RF Classifier with SMOTEENN, is now ready and dumped in model.sav, which we will use and prepare API's so that we can access our model from UI.
 
-```python
-s = pd.Series(methodDict)
-s = s.apply(lambda x: x['accuracy'])  
-s = s.sort_values(ascending=False)  
-plt.figure(figsize=(12, 8))
-
-ax = s.plot(kind='bar')
-for p in ax.patches:
-    ax.annotate(str(round(p.get_height(), 2)), (p.get_x() * 1.005, p.get_height() * 1.005))
-plt.ylim([70.0, 90.0])
-plt.xticks(rotation=45)
-plt.xlabel('Method')
-plt.ylabel('Percentage')
-plt.title('Accuracy of methods')
-
-plt.show()
-
-```
-![17](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/b8d21412-551c-463b-90a2-8993f02addf6)
-</details>  
-<details><summary> Code here </summary>
-
-```python
-
-s = pd.Series(methodDict)
-s = s.apply(lambda x: x['training_time'])  
-s = s.sort_values(ascending=True)  
-
-ax = s.plot(kind='bar')
-for p in ax.patches:
-    ax.annotate(str(round(p.get_height(), 2)), (p.get_x() * 1.005, p.get_height() * 1.005))
-plt.xticks(rotation=45)
-plt.xlabel('Method')
-plt.ylabel('Training Time (seconds)')
-plt.title('Training Time of methods')
-
-plt.show()
-```
-![18](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/ca101ae1-2a3a-4b42-b4e4-10f6242d013a)
-
-</details>  
-
----
-### 9️⃣ Creating predictions on test set
-
-Because the result showed that RandomForest, DecisionTree, SVC, GradientBoosting have the same result. So we can use the decision Tree with best parameters
-
-<details><summary> Code here </summary>
-
-```python
-model = DecisionTreeClassifier(min_samples_split= 7, min_samples_leaf= 7, max_features= 17, max_depth = 2, criterion = 'gini')
-
-model.fit(X_train, y_train)
-dfTestPredictions = model.predict(X_test)
-
-# Write predictions to csv file
-results = pd.DataFrame({'Index': X_test.index, 'predict_Treatment': dfTestPredictions,'test_treatment': y_test})
-# Save to file
-# This file will be visible after publishing in the output section
-results.to_csv('results.csv', index=False)
-print(results)
-EvaluateModel(model, y_test, y_pred, True)
-```
-![20](https://github.com/anhtuan0811/Brazil_Ecommerce/assets/143471832/b204af44-5b90-48b7-853c-284dee901871)
-
+![image](https://github.com/anhtuan0811/Telecom-Churn-Analysis/assets/143471832/880246cd-37be-4d12-94a0-3298b88e4d30)
   
+
 </details>  
 
 ---
