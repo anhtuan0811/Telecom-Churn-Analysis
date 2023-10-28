@@ -5,7 +5,7 @@
 
 - [:briefcase: Case Study and Requirement](#case-study-and-requirement)
 - [:bookmark_tabs: Example Datasets](#bookmark_tabsexample-datasets)
-- [🔎 Explore data and test model](#explore-data-and-test-model)
+- [🔎 Explore data and test model](#--explore-data-and-test-model)
 - [📃 What can you practice with this case study?](#-what-can-you-practice-with-this-case-study)
 
 ---
