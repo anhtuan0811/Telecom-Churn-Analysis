@@ -81,7 +81,7 @@ First 10 rows
 ---
 ## 🔎  Explore data and test model
 
-### The Process is following - [Code & Presentation]or [Only Code]
+### The Process is following - [Code & Presentation](https://github.com/anhtuan0811/Telecom-Churn-Analysis/blob/main/EDA%20%2B%20Machine%20Learning%20Analysis.md)or [EDA Code](https://github.com/anhtuan0811/Telecom-Churn-Analysis/blob/main/Churn_Analysis_EDA.ipynb) and [Modeling Code](https://github.com/anhtuan0811/Telecom-Churn-Analysis/blob/main/Churn_Analysis_Model_Building.ipynb)
 
 
 
